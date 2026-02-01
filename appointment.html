@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - CarePlus Hospital</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo">CarePlus <span>Hospital</span></a>
+            <div class="menu-toggle">☰</div>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="departments.html">Departments</a>
+                <a href="doctors.html">Doctors</a>
+                <a href="services.html">Services</a>
+                <a href="appointment.html" class="active btn btn-sm">Appointment</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Book an Appointment</h1>
+            <p>Schedule a visit with our specialists at your convenience. Your health journey starts here.</p>
+            <div style="margin-top: 24px;">
+                <a href="index.html" style="color: var(--primary-color); font-weight: 500;">&larr; Back to Home</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Appointment Form Section -->
+    <section class="section">
+        <div class="container">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div class="contact-form-container"> <!-- Reusing existing card style -->
+                    <h2 style="margin-bottom: 24px; color: var(--secondary-color); text-align: center;">Appointment
+                        Details</h2>
+                    <form>
+                        <div class="form-group">
+                            <label class="form-label">Patient Name</label>
+                            <input type="text" class="form-control" placeholder="Enter patient's full name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" placeholder="Enter phone number" pattern="[0-9]{10}"
+                                title="Ten digit phone number" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Select Department</label>
+                            <div style="position: relative;">
+                                <select class="form-control" required
+                                    style="appearance: none; -webkit-appearance: none; background-color: white;">
+                                    <option value="" disabled selected>Choose a department...</option>
+                                    <option value="cardiology">Cardiology</option>
+                                    <option value="neurology">Neurology</option>
+                                    <option value="orthopedics">Orthopedics</option>
+                                    <option value="pediatrics">Pediatrics</option>
+                                    <option value="gynecology">Gynecology</option>
+                                    <option value="general">General Medicine</option>
+                                </select>
+                                <div
+                                    style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-light);">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Select Doctor</label>
+                            <div style="position: relative;">
+                                <select class="form-control" required
+                                    style="appearance: none; -webkit-appearance: none; background-color: white;">
+                                    <option value="" disabled selected>Choose a doctor...</option>
+                                    <option value="sharma">Dr. A. Sharma (Cardiology)</option>
+                                    <option value="patel">Dr. Priya Patel (Neurology)</option>
+                                    <option value="singh">Dr. R. Singh (Pediatrics)</option>
+                                    <option value="gupta">Dr. S. Gupta (Cardiology)</option>
+                                    <option value="rao">Dr. K. Rao (Neurology)</option>
+                                    <option value="nair">Dr. M. Nair (Pediatrics)</option>
+                                    <option value="other">Any Available Specialist</option>
+                                </select>
+                                <div
+                                    style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-light);">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Preferred Date</label>
+                            <input type="date" class="form-control" required>
+                        </div>
+
+                        <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Confirm
+                            Appointment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h4>CarePlus Hospital</h4>
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About Us</a>
+                    <a href="careers.html">Careers</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Patients</h4>
+                    <a href="doctors.html">Find a Doctor</a>
+                    <a href="appointment.html">Book Appointment</a>
+                    <a href="services.html">Services</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <a href="contact.html">Contact Us</a>
+                    <a href="#">Emergency: 108</a>
+                    <a href="#">info@careplus.com</a>
+                </div>
+            </div>
+            <p style="text-align: center; opacity: 0.6; font-size: 12px;">&copy; 2026 CarePlus Hospital. All rights
+                reserved.</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Set minimum date to today
+        const dateInput = document.querySelector('input[type="date"]');
+        if (dateInput) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.min = today;
+        }
+    </script>
+</body>
+
+</html>
