@@ -1,0 +1,11 @@
+{
+    "version": 2,
+    "public": true,
+    "name": "careplus-hospital",
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/$1"
+        }
+    ]
+}
