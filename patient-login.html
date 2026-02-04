@@ -356,18 +356,8 @@
                 sendOtpBtn.disabled = true;
                 sendOtpBtn.textContent = 'Sending...';
 
-                // Phase 3.1: Check if patient exists
-                const q = query(collection(db, 'patients'), where('phone', '==', phone));
-                const querySnapshot = await getDocs(q);
-
-                if (querySnapshot.empty) {
-                    showMessage('Phone number not found. Please signup or contact hospital.', 'error');
-                    sendOtpBtn.disabled = false;
-                    sendOtpBtn.textContent = 'Send OTP';
-                    return;
-                }
-
                 // Phase 3.1: Mock OTP generation (in real app, use Firebase Auth Phone)
+                // Allow any phone number - patient will be auto-created on first login
                 otpCode = String(Math.floor(100000 + Math.random() * 900000));
                 console.log(`[DEMO] OTP for ${phone}: ${otpCode}`);
 
@@ -422,20 +412,65 @@
                     return;
                 }
 
-                showMessage('✓ Login successful!', 'success');
+                showMessage('✓ OTP verified! Setting up your account...', 'success');
 
-                // Phase 3.1: Get patient details and create session
-                const q = query(collection(db, 'patients'), where('phone', '==', phone));
+                // Phase 3.1: Check if patient exists in users collection
+                const { collection: firestoreCollection, addDoc, serverTimestamp, query: firestoreQuery, where, getDocs } = 
+                    await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+
+                const usersRef = firestoreCollection(db, 'users');
+                const q = firestoreQuery(usersRef, where('phone', '==', phone), where('role', '==', 'patient'));
                 const querySnapshot = await getDocs(q);
-                const patientData = querySnapshot.docs[0].data();
 
+                let patientDoc;
+
+                if (querySnapshot.empty) {
+                    // Auto-create new patient record on first login
+                    console.log(`[AUTO-CREATE] Creating new patient record for phone: ${phone}`);
+                    
+                    const newPatientData = {
+                        phone: phone,
+                        role: 'patient',
+                        name: `Patient - ${phone}`,
+                        email: `patient-${phone}@careplus.local`,
+                        createdAt: serverTimestamp(),
+                        lastLogin: serverTimestamp(),
+                        status: 'active'
+                    };
+
+                    const docRef = await addDoc(usersRef, newPatientData);
+                    patientDoc = {
+                        id: docRef.id,
+                        data: newPatientData
+                    };
+                    console.log(`[AUTO-CREATE] Patient record created with ID: ${docRef.id}`);
+                } else {
+                    // Existing patient - just update lastLogin
+                    const { updateDoc, doc } = 
+                        await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+                    
+                    const docRef = doc(db, 'users', querySnapshot.docs[0].id);
+                    await updateDoc(docRef, { 
+                        lastLogin: serverTimestamp() 
+                    });
+                    
+                    patientDoc = {
+                        id: querySnapshot.docs[0].id,
+                        data: querySnapshot.docs[0].data()
+                    };
+                    console.log(`[LOGIN] Patient login updated: ${querySnapshot.docs[0].id}`);
+                }
+
+                // Create session
                 sessionStorage.setItem('careplus_user', JSON.stringify({
-                    uid: querySnapshot.docs[0].id,
+                    uid: patientDoc.id,
                     phone: phone,
                     role: 'patient',
-                    name: patientData.name || 'Patient',
-                    email: patientData.email || `patient-${phone}@careplus.local`
+                    name: patientDoc.data.name || 'Patient',
+                    email: patientDoc.data.email || `patient-${phone}@careplus.local`
                 }));
+
+                showMessage('✓ Login successful! Redirecting...', 'success');
 
                 // Redirect to appointment booking
                 setTimeout(() => {
