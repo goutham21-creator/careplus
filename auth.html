@@ -6,60 +6,61 @@
     <title>Login - CarePlus Hospital</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        /* Phase 3: Authentication UI Styles */
+        /* Phase 3.1: Authentication UI Styles - Fixed Layout */
         .auth-container {
             display: flex;
+            align-items: center;
+            justify-content: center;
             min-height: 100vh;
             background: linear-gradient(135deg, var(--primary-color) 0%, #005aca 100%);
+            padding: 20px;
         }
 
         .auth-content {
-            display: flex;
-            width: 100%;
+            display: none;
         }
 
         .auth-left {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            padding: 40px;
-        }
-
-        .auth-left h2 {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-
-        .auth-left p {
-            font-size: 18px;
-            opacity: 0.9;
-            max-width: 300px;
-            line-height: 1.6;
+            display: none;
         }
 
         .auth-right {
-            flex: 1;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
+            display: none;
         }
 
         .auth-form-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        .auth-form-card-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .auth-form-card-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        .auth-form-card-subtitle {
+            font-size: 14px;
+            color: var(--text-light);
         }
 
         .role-selector {
             display: flex;
-            gap: 12px;
-            margin-bottom: 32px;
+            gap: 10px;
+            margin-bottom: 28px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .role-btn {
@@ -71,7 +72,8 @@
             font-size: 14px;
             font-weight: 500;
             color: var(--text-main);
-            transition: var(--transition);
+            transition: all 0.3s ease;
+            white-space: nowrap;
         }
 
         .role-btn:hover {
@@ -87,7 +89,7 @@
         }
 
         .form-title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 600;
             text-align: center;
             margin-bottom: 24px;
@@ -95,12 +97,12 @@
         }
 
         .auth-form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .auth-form-label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-size: 14px;
             font-weight: 500;
             color: var(--text-main);
@@ -113,7 +115,8 @@
             border-radius: 8px;
             font-size: 14px;
             font-family: inherit;
-            transition: var(--transition);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
         }
 
         .auth-form-input:focus {
@@ -130,6 +133,13 @@
             display: block;
         }
 
+        .doctor-id-section small {
+            color: var(--text-light);
+            font-size: 12px;
+            display: block;
+            margin-top: 4px;
+        }
+
         .auth-btn {
             width: 100%;
             padding: 12px;
@@ -140,12 +150,14 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             margin-top: 8px;
+            box-sizing: border-box;
         }
 
         .auth-btn:hover:not(:disabled) {
-            background: var(--primary-hover);
+            background: #0056a8;
+            transform: translateY(-2px);
         }
 
         .auth-btn:disabled {
@@ -184,74 +196,105 @@
             color: var(--primary-color);
             font-weight: 500;
             cursor: pointer;
+            text-decoration: none;
         }
 
-        @media (max-width: 768px) {
-            .auth-content {
-                flex-direction: column;
-            }
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
 
-            .auth-left {
-                padding: 30px 20px;
-            }
-
-            .auth-right {
-                padding: 30px 20px;
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 16px;
             }
 
             .auth-form-card {
+                padding: 30px 20px;
                 max-width: 100%;
+            }
+
+            .auth-form-card-title {
+                font-size: 24px;
+            }
+
+            .form-title {
+                font-size: 20px;
+            }
+
+            .role-selector {
+                gap: 8px;
+                margin-bottom: 24px;
+            }
+
+            .role-btn {
+                padding: 9px 16px;
+                font-size: 13px;
+            }
+
+            .auth-form-input {
+                padding: 10px;
+                font-size: 16px;
+            }
+
+            .auth-btn {
+                padding: 11px;
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .auth-form-card {
+                max-width: 400px;
             }
         }
     </style>
 </head>
 <body>
     <div class="auth-container">
-        <div class="auth-content">
-            <div class="auth-left">
-                <h2>CarePlus Hospital</h2>
-                <p>Compassionate Care, Advanced Medicine. Secure access for patients, doctors, and administrators.</p>
+        <div class="auth-form-card">
+            <!-- Header -->
+            <div class="auth-form-card-header">
+                <div class="auth-form-card-title">CarePlus</div>
+                <div class="auth-form-card-subtitle">Doctor & Admin Login</div>
             </div>
-            <div class="auth-right">
-                <div class="auth-form-card">
-                    <!-- Phase 3.1: Role Selector (Patient signup removed - use patient-login.html) -->
-                    <div class="role-selector">
-                        <button class="role-btn active" data-role="doctor">Doctor</button>
-                        <button class="role-btn" data-role="admin">Admin</button>
-                    </div>
 
-                    <!-- Message Display -->
-                    <div class="auth-message"></div>
+            <!-- Phase 3.1: Role Selector (Patient signup removed - use patient-login.html) -->
+            <div class="role-selector">
+                <button class="role-btn active" data-role="doctor">Doctor</button>
+                <button class="role-btn" data-role="admin">Admin</button>
+            </div>
 
-                    <!-- Login Form -->
-                    <form id="authForm">
-                        <h3 class="form-title" id="formTitle">Doctor Login</h3>
+            <!-- Message Display -->
+            <div class="auth-message"></div>
 
-                        <div class="auth-form-group">
-                            <label class="auth-form-label">Email Address</label>
-                            <input type="email" class="auth-form-input" name="email" placeholder="Enter your email" required>
-                        </div>
+            <!-- Login Form -->
+            <form id="authForm">
+                <h3 class="form-title" id="formTitle">Doctor Login</h3>
 
-                        <div class="auth-form-group">
-                            <label class="auth-form-label">Password</label>
-                            <input type="password" class="auth-form-input" name="password" placeholder="Enter password" required>
-                        </div>
-
-                        <!-- Phase 3.1: Doctor ID Field (always shown for doctor/admin) -->
-                        <div class="auth-form-group doctor-id-section active">
-                            <label class="auth-form-label">Doctor/Admin ID</label>
-                            <input type="text" class="auth-form-input" name="doctorId" placeholder="Enter your ID">
-                            <small style="color: var(--text-light); font-size: 12px;">Required for doctor accounts</small>
-                        </div>
-
-                        <button type="submit" class="auth-btn">Login</button>
-                    </form>
-
-                    <div class="auth-footer">
-                        <!-- Phase 3.1: Patient login link -->
-                        Patient? <a href="patient-login.html">Login here</a>
-                    </div>
+                <div class="auth-form-group">
+                    <label class="auth-form-label">Email Address</label>
+                    <input type="email" class="auth-form-input" name="email" placeholder="Enter your email" required>
                 </div>
+
+                <div class="auth-form-group">
+                    <label class="auth-form-label">Password</label>
+                    <input type="password" class="auth-form-input" name="password" placeholder="Enter password" required>
+                </div>
+
+                <!-- Phase 3.1: Doctor ID Field (always shown for doctor/admin) -->
+                <div class="auth-form-group doctor-id-section active">
+                    <label class="auth-form-label">Doctor/Admin ID</label>
+                    <input type="text" class="auth-form-input" name="doctorId" placeholder="Enter your ID">
+                    <small>Required for doctor accounts</small>
+                </div>
+
+                <button type="submit" class="auth-btn">Login</button>
+            </form>
+
+            <div class="auth-footer">
+                <!-- Phase 3.1: Patient login link -->
+                Patient? <a href="patient-login.html">Login here</a>
             </div>
         </div>
     </div>

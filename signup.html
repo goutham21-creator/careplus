@@ -3,151 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - CarePlus Hospital</title>
+    <title>Redirecting to Patient Login - CarePlus Hospital</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        /* Phase 3: Sign Up UI Styles (Reuse auth styles) */
-        .auth-container {
+        /* Phase 3.1: Redirect Page */
+        .redirect-container {
             display: flex;
+            align-items: center;
+            justify-content: center;
             min-height: 100vh;
             background: linear-gradient(135deg, var(--primary-color) 0%, #005aca 100%);
+            padding: 20px;
         }
 
-        .auth-content {
-            display: flex;
+        .redirect-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             width: 100%;
-        }
-
-        .auth-left {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
+            max-width: 420px;
             padding: 40px;
+            text-align: center;
+            box-sizing: border-box;
         }
 
-        .auth-left h2 {
-            font-size: 36px;
+        .redirect-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .redirect-title {
+            font-size: 24px;
             font-weight: 700;
-            margin-bottom: 16px;
+            color: var(--secondary-color);
+            margin-bottom: 12px;
         }
 
-        .auth-left p {
-            font-size: 18px;
-            opacity: 0.9;
-            max-width: 300px;
+        .redirect-message {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-bottom: 32px;
             line-height: 1.6;
         }
 
-        .auth-right {
-            flex: 1;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            overflow-y: auto;
-            max-height: 100vh;
-        }
-
-        .auth-form-card {
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .role-selector {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 32px;
-            justify-content: center;
-        }
-
-        .role-btn {
-            padding: 10px 20px;
-            background: var(--background-color);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-main);
-            transition: var(--transition);
-        }
-
-        .role-btn:hover {
-            border-color: var(--primary-color);
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .role-btn.active {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-        }
-
-        .form-title {
-            font-size: 24px;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 24px;
-            color: var(--secondary-color);
-        }
-
-        .auth-form-group {
-            margin-bottom: 16px;
-        }
-
-        .auth-form-label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-main);
-        }
-
-        .auth-form-input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: inherit;
-            transition: var(--transition);
-        }
-
-        .auth-form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
-        }
-
-        .doctor-id-section {
-            display: none;
-        }
-
-        .doctor-id-section.active {
-            display: block;
-        }
-
-        .auth-btn {
-            width: 100%;
-            padding: 10px;
+        .redirect-btn {
+            display: inline-block;
+            padding: 12px 32px;
             background: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
-            margin-top: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
         }
 
-        .auth-btn:hover:not(:disabled) {
-            background: var(--primary-hover);
+        .redirect-btn:hover {
+            background: #0056a8;
+            transform: translateY(-2px);
+        }
+
+        .redirect-subtext {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-container">
+        <div class="redirect-card">
+            <div class="redirect-icon">👤</div>
+            <h2 class="redirect-title">Patient Login</h2>
+            <p class="redirect-message">
+                Patient signup has been streamlined for your convenience. Please use our simple phone-based OTP login.
+            </p>
+            <a href="patient-login.html" class="redirect-btn">Go to Patient Login</a>
+            <p class="redirect-subtext">
+                You'll be redirected automatically in 3 seconds if you don't click above.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-redirect after 3 seconds
+        setTimeout(() => {
+            window.location.href = 'patient-login.html';
+        }, 3000);
+    </script>
+</body>
+</html>
         }
 
         .auth-btn:disabled {
