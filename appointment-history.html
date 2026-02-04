@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Appointments - CarePlus Hospital</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Phase 3: Patient Appointment History Styles */
+        .appointments-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #005aca 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 40px;
+        }
+
+        .appointments-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .appointments-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .appointments-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .appointment-card {
+            background: white;
+            border-left: 4px solid var(--primary-color);
+            padding: 24px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .appointment-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .appointment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .doctor-info {
+            flex: 1;
+        }
+
+        .doctor-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 4px;
+        }
+
+        .department {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.upcoming {
+            background: #e3f2fd;
+            color: #0071e3;
+        }
+
+        .status-badge.completed {
+            background: #e8f5e9;
+            color: #34c759;
+        }
+
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #ff9800;
+        }
+
+        .appointment-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .action-btn.primary {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .action-btn.primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .prescription-box {
+            background: #f5f5f7;
+            border-left: 3px solid #34c759;
+            padding: 16px;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+
+        .prescription-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .prescription-content {
+            font-size: 13px;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-text {
+            font-size: 18px;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .empty-subtext {
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+
+        .btn-book {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-book:hover {
+            background: var(--primary-hover);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .filter-tab:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .filter-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .appointment-details {
+                grid-template-columns: 1fr;
+            }
+
+            .appointment-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo">CarePlus <span>Hospital</span></a>
+            <div class="menu-toggle">☰</div>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="departments.html">Departments</a>
+                <a href="doctors.html">Doctors</a>
+                <a href="services.html">Services</a>
+                <a href="appointment.html" class="btn btn-sm">Book Appointment</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div class="appointments-header">
+        <div class="container">
+            <h1>My Appointments</h1>
+            <p>View and manage your appointment history</p>
+        </div>
+    </div>
+
+    <!-- Appointments Section -->
+    <section class="section">
+        <div class="container appointments-container">
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all">All</button>
+                <button class="filter-tab" data-filter="upcoming">Upcoming</button>
+                <button class="filter-tab" data-filter="completed">Completed</button>
+            </div>
+
+            <!-- Appointments List -->
+            <div id="appointmentsList"></div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loadingState" style="display: none;">
+                <div class="spinner"></div>
+                <p style="margin-top: 16px; color: var(--text-light);">Loading appointments...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">📋</div>
+                <p class="empty-text">No appointments found</p>
+                <p class="empty-subtext">You haven't booked any appointments yet</p>
+                <a href="appointment.html" class="btn-book">Book Your First Appointment</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h4>CarePlus Hospital</h4>
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About Us</a>
+                    <a href="careers.html">Careers</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Patients</h4>
+                    <a href="doctors.html">Find a Doctor</a>
+                    <a href="appointment.html">Book Appointment</a>
+                    <a href="services.html">Services</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <a href="contact.html">Contact Us</a>
+                    <a href="#">Emergency: 108</a>
+                    <a href="#">info@careplus.com</a>
+                </div>
+            </div>
+            <p style="text-align: center; opacity: 0.6; font-size: 12px;">&copy; 2026 CarePlus Hospital. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Phase 3: Patient Appointment History
+        import { getCurrentUser, requireRole, showNotification } from './assets/js/auth.js';
+        import { db } from './assets/js/firebase.js';
+        import { collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const appointmentsList = document.getElementById('appointmentsList');
+        const loadingState = document.getElementById('loadingState');
+        const emptyState = document.getElementById('emptyState');
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        let allAppointments = [];
+        let currentFilter = 'all';
+
+        // Optional: Require patient role (comment out to allow all users)
+        // requireRole('patient');
+
+        // Phase 3: Load patient appointments
+        async function loadAppointments() {
+            try {
+                loadingState.style.display = 'block';
+                appointmentsList.innerHTML = '';
+
+                const user = getCurrentUser();
+                
+                // Get appointments for current user or all if not authenticated
+                let q;
+                if (user && user.uid) {
+                    q = query(
+                        collection(db, 'appointments'),
+                        where('userId', '==', user.uid),
+                        orderBy('preferredDate', 'desc')
+                    );
+                } else {
+                    // For guests, show recent appointments
+                    q = query(
+                        collection(db, 'appointments'),
+                        orderBy('createdAt', 'desc')
+                    );
+                }
+
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    loadingState.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                allAppointments = [];
+                querySnapshot.forEach((doc) => {
+                    allAppointments.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                loadingState.style.display = 'none';
+                displayAppointments(allAppointments);
+
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+                loadingState.style.display = 'none';
+                appointmentsList.innerHTML = '<p style="text-align: center; color: var(--text-light);">Failed to load appointments</p>';
+            }
+        }
+
+        // Phase 3: Display appointments with filtering
+        function displayAppointments(appointments) {
+            appointmentsList.innerHTML = '';
+
+            let filteredAppointments = appointments;
+            if (currentFilter !== 'all') {
+                filteredAppointments = appointments.filter(apt => {
+                    const status = getAppointmentStatus(apt.preferredDate);
+                    return status.toLowerCase() === currentFilter;
+                });
+            }
+
+            if (filteredAppointments.length === 0) {
+                appointmentsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <p class="empty-text">No ${currentFilter} appointments</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredAppointments.forEach(appointment => {
+                const status = getAppointmentStatus(appointment.preferredDate);
+                const statusClass = status.toLowerCase();
+                const card = document.createElement('div');
+                card.className = 'appointment-card';
+                card.innerHTML = `
+                    <div class="appointment-header">
+                        <div class="doctor-info">
+                            <div class="doctor-name">${appointment.doctor}</div>
+                            <div class="department">${appointment.department}</div>
+                        </div>
+                        <span class="status-badge ${statusClass}">${status}</span>
+                    </div>
+                    <div class="appointment-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Appointment Date</span>
+                            <span class="detail-value">${formatDate(appointment.preferredDate)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Patient Name</span>
+                            <span class="detail-value">${appointment.patientName}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Phone</span>
+                            <span class="detail-value">${appointment.phone}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value">${appointment.status || 'Pending'}</span>
+                        </div>
+                    </div>
+                    <div class="appointment-actions">
+                        <button class="action-btn" onclick="alert('Reschedule feature coming soon')">Reschedule</button>
+                        <button class="action-btn primary view-prescription" data-id="${appointment.id}">View Prescription</button>
+                    </div>
+                    <div id="prescription-${appointment.id}"></div>
+                `;
+                appointmentsList.appendChild(card);
+            });
+
+            // Phase 3: Add prescription loading
+            document.querySelectorAll('.view-prescription').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const appointmentId = btn.dataset.id;
+                    await loadPrescription(appointmentId);
+                });
+            });
+        }
+
+        // Phase 3: Load prescription for appointment
+        async function loadPrescription(appointmentId) {
+            try {
+                const prescriptionDiv = document.getElementById(`prescription-${appointmentId}`);
+                
+                if (prescriptionDiv.innerHTML) {
+                    prescriptionDiv.innerHTML = '';
+                    return;
+                }
+
+                const q = query(
+                    collection(db, 'prescriptions'),
+                    where('appointmentId', '==', appointmentId)
+                );
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    prescriptionDiv.innerHTML = '<p style="text-align: center; color: var(--text-light); margin-top: 12px;">No prescription available yet</p>';
+                    return;
+                }
+
+                const prescription = querySnapshot.docs[0].data();
+                prescriptionDiv.innerHTML = `
+                    <div class="prescription-box">
+                        <div class="prescription-title">💊 Doctor's Prescription</div>
+                        <div class="prescription-content">
+                            <p><strong>Diagnosis:</strong> ${prescription.diagnosis || 'N/A'}</p>
+                            <p><strong>Medicines:</strong> ${prescription.medicines || 'N/A'}</p>
+                            <p><strong>Notes:</strong> ${prescription.notes || 'N/A'}</p>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading prescription:', error);
+            }
+        }
+
+        // Phase 3: Get appointment status
+        function getAppointmentStatus(dateString) {
+            const appointmentDate = new Date(dateString);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            appointmentDate.setHours(0, 0, 0, 0);
+
+            if (appointmentDate < today) {
+                return 'Completed';
+            } else if (appointmentDate.getTime() === today.getTime()) {
+                return 'Upcoming';
+            } else {
+                return 'Upcoming';
+            }
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Phase 3: Filter tabs handler
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                filterTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentFilter = tab.dataset.filter;
+                displayAppointments(allAppointments);
+            });
+        });
+
+        // Load appointments on page load
+        loadAppointments();
+    </script>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -20,7 +20,8 @@
                 <a href="departments.html">Departments</a>
                 <a href="doctors.html">Doctors</a>
                 <a href="services.html">Services</a>
-                <a href="appointment.html" class="active btn btn-sm">Appointment</a>
+                <a href="appointment.html" class="btn btn-sm">Book Appointment</a>
+                <a href="appointment-history.html" style="color: var(--primary-color); font-weight: 500;">My Appointments</a>
                 <a href="contact.html">Contact</a>
             </nav>
         </div>
@@ -106,6 +107,27 @@
                         <div class="form-group">
                             <label class="form-label">Preferred Date</label>
                             <input type="date" class="form-control" required>
+                        </div>
+
+                        <!-- Phase 3: Time Slot Selection (Optional) -->
+                        <div class="form-group">
+                            <label class="form-label">Preferred Time Slot (Optional)</label>
+                            <div style="position: relative;">
+                                <select class="form-control" style="appearance: none; -webkit-appearance: none; background-color: white;">
+                                    <option value="" selected>Select time slot...</option>
+                                    <option value="09:00-10:00">09:00 AM - 10:00 AM</option>
+                                    <option value="10:00-11:00">10:00 AM - 11:00 AM</option>
+                                    <option value="11:00-12:00">11:00 AM - 12:00 PM</option>
+                                    <option value="14:00-15:00">02:00 PM - 03:00 PM</option>
+                                    <option value="15:00-16:00">03:00 PM - 04:00 PM</option>
+                                    <option value="16:00-17:00">04:00 PM - 05:00 PM</option>
+                                </select>
+                                <div style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-light);">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Confirm

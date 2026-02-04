@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - CarePlus Hospital</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Phase 3: Sign Up UI Styles (Reuse auth styles) */
+        .auth-container {
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #005aca 100%);
+        }
+
+        .auth-content {
+            display: flex;
+            width: 100%;
+        }
+
+        .auth-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 40px;
+        }
+
+        .auth-left h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .auth-left p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 300px;
+            line-height: 1.6;
+        }
+
+        .auth-right {
+            flex: 1;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .auth-form-card {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            justify-content: center;
+        }
+
+        .role-btn {
+            padding: 10px 20px;
+            background: var(--background-color);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+
+        .role-btn:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .role-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--secondary-color);
+        }
+
+        .auth-form-group {
+            margin-bottom: 16px;
+        }
+
+        .auth-form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .auth-form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .auth-form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+        }
+
+        .doctor-id-section {
+            display: none;
+        }
+
+        .doctor-id-section.active {
+            display: block;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 8px;
+        }
+
+        .auth-btn:hover:not(:disabled) {
+            background: var(--primary-hover);
+        }
+
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .auth-message {
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .auth-message.success {
+            background: #d1f2d5;
+            color: #237c37;
+            display: block;
+        }
+
+        .auth-message.error {
+            background: #ffd5d5;
+            color: #d10000;
+            display: block;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .auth-footer a {
+            color: var(--primary-color);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .auth-content {
+                flex-direction: column;
+            }
+
+            .auth-left {
+                padding: 30px 20px;
+            }
+
+            .auth-right {
+                padding: 30px 20px;
+            }
+
+            .auth-form-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-content">
+            <div class="auth-left">
+                <h2>CarePlus Hospital</h2>
+                <p>Join our community. Create an account to access our healthcare services.</p>
+            </div>
+            <div class="auth-right">
+                <div class="auth-form-card">
+                    <!-- Phase 3: Role Selector -->
+                    <div class="role-selector">
+                        <button type="button" class="role-btn active" data-role="patient">Patient</button>
+                        <button type="button" class="role-btn" data-role="doctor">Doctor</button>
+                    </div>
+
+                    <!-- Message Display -->
+                    <div class="auth-message"></div>
+
+                    <!-- Sign Up Form -->
+                    <form id="signupForm">
+                        <h3 class="form-title" id="formTitle">Patient Sign Up</h3>
+
+                        <div class="auth-form-group">
+                            <label class="auth-form-label">Full Name</label>
+                            <input type="text" class="auth-form-input" name="fullName" placeholder="Enter full name" required>
+                        </div>
+
+                        <div class="auth-form-group">
+                            <label class="auth-form-label">Email Address</label>
+                            <input type="email" class="auth-form-input" name="email" placeholder="Enter email" required>
+                        </div>
+
+                        <div class="auth-form-group">
+                            <label class="auth-form-label">Password</label>
+                            <input type="password" class="auth-form-input" name="password" placeholder="Minimum 6 characters" minlength="6" required>
+                        </div>
+
+                        <div class="auth-form-group">
+                            <label class="auth-form-label">Confirm Password</label>
+                            <input type="password" class="auth-form-input" name="confirmPassword" placeholder="Confirm password" required>
+                        </div>
+
+                        <!-- Phase 3: Doctor ID Field (Hidden by default) -->
+                        <div class="auth-form-group doctor-id-section">
+                            <label class="auth-form-label">Doctor ID</label>
+                            <input type="text" class="auth-form-input" name="doctorId" placeholder="Enter your doctor ID" required>
+                            <small style="color: var(--text-light); font-size: 12px;">Your registration code from the hospital</small>
+                        </div>
+
+                        <button type="submit" class="auth-btn">Sign Up</button>
+                    </form>
+
+                    <div class="auth-footer">
+                        Already have an account? <a href="auth.html">Log in here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Phase 3: User Registration System
+        import { auth, db } from './assets/js/firebase.js';
+        import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const roleButtons = document.querySelectorAll('.role-btn');
+        const signupForm = document.getElementById('signupForm');
+        const formTitle = document.getElementById('formTitle');
+        const messageDiv = document.querySelector('.auth-message');
+        const doctorIdSection = document.querySelector('.doctor-id-section');
+        let selectedRole = 'patient';
+
+        // Phase 3: Role Selection Handler
+        roleButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                roleButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedRole = btn.dataset.role;
+
+                // Update form title
+                formTitle.textContent = `${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)} Sign Up`;
+
+                // Show/hide doctor ID field
+                if (selectedRole === 'doctor') {
+                    doctorIdSection.classList.add('active');
+                    signupForm.querySelector('input[name="doctorId"]').required = true;
+                } else {
+                    doctorIdSection.classList.remove('active');
+                    signupForm.querySelector('input[name="doctorId"]').required = false;
+                }
+
+                // Clear messages
+                messageDiv.textContent = '';
+                messageDiv.classList.remove('success', 'error');
+            });
+        });
+
+        // Phase 3: Sign Up Handler
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fullName = signupForm.querySelector('input[name="fullName"]').value;
+            const email = signupForm.querySelector('input[name="email"]').value;
+            const password = signupForm.querySelector('input[name="password"]').value;
+            const confirmPassword = signupForm.querySelector('input[name="confirmPassword"]').value;
+            const doctorId = signupForm.querySelector('input[name="doctorId"]')?.value || null;
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                messageDiv.textContent = 'Passwords do not match.';
+                messageDiv.classList.add('error');
+                return;
+            }
+
+            const submitBtn = signupForm.querySelector('.auth-btn');
+            const originalText = submitBtn.textContent;
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating account...';
+                messageDiv.classList.remove('success', 'error');
+
+                // Create Firebase Auth user
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Phase 3: Store user profile in Firestore
+                await addDoc(collection(db, 'users'), {
+                    uid: user.uid,
+                    email: email,
+                    name: fullName,
+                    role: selectedRole,
+                    doctorId: selectedRole === 'doctor' ? doctorId : null,
+                    createdAt: new Date(),
+                    status: 'active'
+                });
+
+                // Show success message
+                messageDiv.textContent = 'Account created successfully! Redirecting to login...';
+                messageDiv.classList.add('success');
+
+                // Redirect to login
+                setTimeout(() => {
+                    window.location.href = 'auth.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('Sign Up Error:', error);
+                messageDiv.textContent = error.message || 'Failed to create account. Please try again.';
+                messageDiv.classList.add('error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CarePlus Hospital</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Phase 3: Authentication UI Styles */
+        .auth-container {
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #005aca 100%);
+        }
+
+        .auth-content {
+            display: flex;
+            width: 100%;
+        }
+
+        .auth-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 40px;
+        }
+
+        .auth-left h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .auth-left p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 300px;
+            line-height: 1.6;
+        }
+
+        .auth-right {
+            flex: 1;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .auth-form-card {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            justify-content: center;
+        }
+
+        .role-btn {
+            padding: 10px 20px;
+            background: var(--background-color);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+
+        .role-btn:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .role-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--secondary-color);
+        }
+
+        .auth-form-group {
+            margin-bottom: 20px;
+        }
+
+        .auth-form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .auth-form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .auth-form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+        }
+
+        .doctor-id-section {
+            display: none;
+        }
+
+        .doctor-id-section.active {
+            display: block;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 8px;
+        }
+
+        .auth-btn:hover:not(:disabled) {
+            background: var(--primary-hover);
+        }
+
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .auth-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .auth-message.success {
+            background: #d1f2d5;
+            color: #237c37;
+            display: block;
+        }
+
+        .auth-message.error {
+            background: #ffd5d5;
+            color: #d10000;
+            display: block;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .auth-footer a {
+            color: var(--primary-color);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .auth-content {
+                flex-direction: column;
+            }
+
+            .auth-left {
+                padding: 30px 20px;
+            }
+
+            .auth-right {
+                padding: 30px 20px;
+            }
+
+            .auth-form-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-content">
+            <div class="auth-left">
+                <h2>CarePlus Hospital</h2>
+                <p>Compassionate Care, Advanced Medicine. Secure access for patients, doctors, and administrators.</p>
+            </div>
+            <div class="auth-right">
+                <div class="auth-form-card">
+                    <!-- Phase 3: Role Selector -->
+                    <div class="role-selector">
+                        <button class="role-btn active" data-role="patient">Patient</button>
+                        <button class="role-btn" data-role="doctor">Doctor</button>
+                        <button class="role-btn" data-role="admin">Admin</button>
+                    </div>
+
+                    <!-- Message Display -->
+                    <div class="auth-message"></div>
+
+                    <!-- Login Form -->
+                    <form id="authForm">
+                        <h3 class="form-title" id="formTitle">Patient Login</h3>
+
+                        <div class="auth-form-group">
+                            <label class="auth-form-label">Email Address</label>
+                            <input type="email" class="auth-form-input" name="email" placeholder="Enter your email" required>
+                        </div>
+
+                        <div class="auth-form-group">
+                            <label class="auth-form-label">Password</label>
+                            <input type="password" class="auth-form-input" name="password" placeholder="Enter password" required>
+                        </div>
+
+                        <!-- Phase 3: Doctor ID Field (Hidden by default) -->
+                        <div class="auth-form-group doctor-id-section">
+                            <label class="auth-form-label">Doctor ID</label>
+                            <input type="text" class="auth-form-input" name="doctorId" placeholder="Enter your doctor ID">
+                            <small style="color: var(--text-light); font-size: 12px;">Required for doctor accounts</small>
+                        </div>
+
+                        <button type="submit" class="auth-btn">Login</button>
+                    </form>
+
+                    <div class="auth-footer">
+                        Don't have an account? <a href="signup.html">Sign up here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Phase 3: Role-Based Authentication System
+        import { auth, db } from './assets/js/firebase.js';
+        import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const roleButtons = document.querySelectorAll('.role-btn');
+        const authForm = document.getElementById('authForm');
+        const formTitle = document.getElementById('formTitle');
+        const messageDiv = document.querySelector('.auth-message');
+        const doctorIdSection = document.querySelector('.doctor-id-section');
+        let selectedRole = 'patient';
+
+        // Phase 3: Role Selection Handler
+        roleButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                roleButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedRole = btn.dataset.role;
+
+                // Update form title
+                formTitle.textContent = `${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)} Login`;
+
+                // Show/hide doctor ID field
+                if (selectedRole === 'doctor') {
+                    doctorIdSection.classList.add('active');
+                } else {
+                    doctorIdSection.classList.remove('active');
+                }
+
+                // Clear messages
+                messageDiv.textContent = '';
+                messageDiv.classList.remove('success', 'error');
+            });
+        });
+
+        // Phase 3: Authentication Handler
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = authForm.querySelector('input[name="email"]').value;
+            const password = authForm.querySelector('input[name="password"]').value;
+            const doctorId = authForm.querySelector('input[name="doctorId"]')?.value || null;
+
+            const submitBtn = authForm.querySelector('.auth-btn');
+            const originalText = submitBtn.textContent;
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Logging in...';
+                messageDiv.classList.remove('success', 'error');
+
+                // Authenticate with Firebase
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Phase 3: Verify Role-Based Access
+                const usersRef = collection(db, 'users');
+                const q = query(usersRef, where('uid', '==', user.uid));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    throw new Error('User profile not found. Please contact admin.');
+                }
+
+                const userProfile = querySnapshot.docs[0].data();
+
+                // Verify role matches
+                if (userProfile.role !== selectedRole) {
+                    throw new Error(`This account is registered as a ${userProfile.role}. Please select the correct role.`);
+                }
+
+                // Doctor-specific validation
+                if (selectedRole === 'doctor' && userProfile.doctorId !== doctorId) {
+                    throw new Error('Invalid Doctor ID for this account.');
+                }
+
+                // Phase 3: Store role and user info in sessionStorage
+                sessionStorage.setItem('careplus_user', JSON.stringify({
+                    uid: user.uid,
+                    email: user.email,
+                    role: userProfile.role,
+                    name: userProfile.name || email,
+                    doctorId: userProfile.doctorId || null
+                }));
+
+                // Show success and redirect
+                messageDiv.textContent = `Welcome ${userProfile.role}!`;
+                messageDiv.classList.add('success');
+
+                // Redirect based on role
+                setTimeout(() => {
+                    if (selectedRole === 'patient') {
+                        window.location.href = 'appointment.html';
+                    } else if (selectedRole === 'doctor') {
+                        window.location.href = 'doctor-dashboard.html';
+                    } else if (selectedRole === 'admin') {
+                        window.location.href = 'admin-dashboard.html';
+                    }
+                }, 1500);
+
+            } catch (error) {
+                console.error('Auth Error:', error);
+                messageDiv.textContent = error.message || 'Login failed. Please try again.';
+                messageDiv.classList.add('error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+    </script>
+</body>
+</html>

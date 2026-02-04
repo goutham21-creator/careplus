@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - CarePlus Hospital</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Phase 3: Doctor Dashboard Styles */
+        .doctor-header {
+            background: linear-gradient(135deg, #34c759 0%, #30b350 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 40px;
+        }
+
+        .doctor-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .doctor-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .doctor-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .doctor-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .appointments-section {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 12px;
+        }
+
+        .doctor-info {
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 12px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .info-label {
+            color: var(--text-light);
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .appointment-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .appointment-item:last-child {
+            border-bottom: none;
+        }
+
+        .patient-name {
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .appointment-date {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .appointment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+
+        .appointment-table thead {
+            background: var(--background-color);
+        }
+
+        .appointment-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .appointment-table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .appointment-table tr:hover {
+            background: var(--background-color);
+        }
+
+        .patient-cell {
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .date-cell {
+            color: var(--text-light);
+        }
+
+        .action-cell {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-small:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary-small {
+            background: var(--background-color);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary-small:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .prescription-form-group {
+            margin-bottom: 16px;
+        }
+
+        .prescription-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-main);
+            font-size: 14px;
+        }
+
+        .prescription-input,
+        .prescription-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .prescription-input:focus,
+        .prescription-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+        }
+
+        .prescription-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .modal-btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .modal-btn-secondary {
+            background: var(--background-color);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-btn-secondary:hover {
+            border-color: var(--primary-color);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .doctor-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .appointment-table {
+                font-size: 12px;
+            }
+
+            .appointment-table th,
+            .appointment-table td {
+                padding: 8px;
+            }
+
+            .action-cell {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo">CarePlus <span>Hospital</span></a>
+            <div class="menu-toggle">☰</div>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="appointment.html">Services</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div class="doctor-header">
+        <div class="container">
+            <h1>Doctor Dashboard</h1>
+            <p>Manage your appointments and add prescriptions</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <section class="section">
+        <div class="container doctor-container">
+            <div class="doctor-grid">
+                <!-- Appointments List -->
+                <div class="appointments-section">
+                    <h2 style="margin-bottom: 20px; color: var(--secondary-color);">My Appointments</h2>
+                    <div id="appointmentsContent" class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Doctor Info -->
+                    <div class="sidebar-card">
+                        <div class="sidebar-title">📋 Doctor Information</div>
+                        <div class="doctor-info" id="doctorInfo">
+                            <div class="info-item">
+                                <span class="info-label">Name</span>
+                                <span class="info-value">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Doctor ID</span>
+                                <span class="info-value">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Email</span>
+                                <span class="info-value">-</span>
+                            </div>
+                        </div>
+                        <button class="btn" onclick="logout()" style="width: 100%; margin-top: 12px; padding: 10px;">Logout</button>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="sidebar-card">
+                        <div class="sidebar-title">📊 Quick Stats</div>
+                        <div class="info-item">
+                            <span class="info-label">Total Appointments</span>
+                            <span class="info-value" id="totalAppointments">0</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Today's Appointments</span>
+                            <span class="info-value" id="todayAppointments">0</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Prescriptions Added</span>
+                            <span class="info-value" id="prescriptionCount">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prescription Modal -->
+    <div id="prescriptionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Add Prescription</span>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="prescriptionForm">
+                <div class="prescription-form-group">
+                    <label class="prescription-label">Patient Name</label>
+                    <input type="text" id="patientNameField" class="prescription-input" disabled>
+                </div>
+
+                <div class="prescription-form-group">
+                    <label class="prescription-label">Diagnosis *</label>
+                    <input type="text" id="diagnosisField" class="prescription-input" placeholder="e.g., Common Fever" required>
+                </div>
+
+                <div class="prescription-form-group">
+                    <label class="prescription-label">Medicines *</label>
+                    <textarea id="medicinesField" class="prescription-textarea" placeholder="e.g., Aspirin 500mg twice daily for 5 days" required></textarea>
+                </div>
+
+                <div class="prescription-form-group">
+                    <label class="prescription-label">Additional Notes</label>
+                    <textarea id="notesField" class="prescription-textarea" placeholder="Special instructions or follow-up notes"></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn modal-btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="modal-btn modal-btn-primary">Save Prescription</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h4>CarePlus Hospital</h4>
+                    <a href="index.html">Home</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <a href="doctors.html">Find a Doctor</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+            </div>
+            <p style="text-align: center; opacity: 0.6; font-size: 12px;">&copy; 2026 CarePlus Hospital. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Phase 3: Doctor Dashboard
+        import { getCurrentUser, requireRole, showNotification, logout } from './assets/js/auth.js';
+        import { db } from './assets/js/firebase.js';
+        import { collection, query, where, getDocs, addDoc, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Make logout accessible globally
+        window.logout = logout;
+
+        const appointmentsContent = document.getElementById('appointmentsContent');
+        const doctorInfo = document.getElementById('doctorInfo');
+        const prescriptionModal = document.getElementById('prescriptionModal');
+        const prescriptionForm = document.getElementById('prescriptionForm');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const closeBtn = document.querySelector('.modal-close');
+
+        let currentDoctor = null;
+        let currentAppointmentId = null;
+        let allAppointments = [];
+
+        // Phase 3: Check authentication and load doctor data
+        async function initializeDashboard() {
+            try {
+                // Require doctor role
+                requireRole('doctor');
+
+                const user = getCurrentUser();
+                currentDoctor = user;
+
+                // Display doctor info
+                const infoDiv = doctorInfo.querySelector('.doctor-info') || doctorInfo;
+                infoDiv.innerHTML = `
+                    <div class="info-item">
+                        <span class="info-label">Name</span>
+                        <span class="info-value">${user.name}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Doctor ID</span>
+                        <span class="info-value">${user.doctorId || 'N/A'}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value" style="word-break: break-all;">${user.email}</span>
+                    </div>
+                `;
+
+                // Load appointments
+                await loadDoctorAppointments();
+                await updateStats();
+
+            } catch (error) {
+                console.error('Dashboard init error:', error);
+            }
+        }
+
+        // Phase 3: Load doctor's appointments
+        async function loadDoctorAppointments() {
+            try {
+                const q = query(
+                    collection(db, 'appointments'),
+                    where('doctor', '==', currentDoctor.name),
+                    orderBy('preferredDate', 'asc')
+                );
+                const querySnapshot = await getDocs(q);
+
+                allAppointments = [];
+                querySnapshot.forEach((doc) => {
+                    allAppointments.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                displayAppointments();
+
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+                appointmentsContent.innerHTML = '<p class="empty-state">Failed to load appointments</p>';
+            }
+        }
+
+        // Phase 3: Display appointments in table
+        function displayAppointments() {
+            if (allAppointments.length === 0) {
+                appointmentsContent.innerHTML = '<div class="empty-state">No appointments assigned to you yet</div>';
+                return;
+            }
+
+            let html = `
+                <table class="appointment-table">
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Date</th>
+                            <th>Contact</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            allAppointments.forEach((apt) => {
+                const status = apt.status || 'Pending';
+                html += `
+                    <tr>
+                        <td class="patient-cell">${apt.patientName}</td>
+                        <td class="date-cell">${formatDate(apt.preferredDate)}</td>
+                        <td>${apt.phone}</td>
+                        <td><span class="status-badge ${status.toLowerCase()}">${status}</span></td>
+                        <td class="action-cell">
+                            <button class="btn-small" onclick="window.viewDetails('${apt.id}')">View</button>
+                            <button class="btn-small btn-secondary-small" onclick="window.openPrescriptionModal('${apt.id}', '${apt.patientName}')">Prescription</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            appointmentsContent.innerHTML = html;
+        }
+
+        // Phase 3: Update statistics
+        async function updateStats() {
+            const totalCount = allAppointments.length;
+            const today = new Date().toISOString().split('T')[0];
+            const todayCount = allAppointments.filter(apt => apt.preferredDate === today).length;
+
+            // Count prescriptions
+            const q = query(collection(db, 'prescriptions'));
+            const querySnapshot = await getDocs(q);
+            const prescriptionCount = querySnapshot.size;
+
+            document.getElementById('totalAppointments').textContent = totalCount;
+            document.getElementById('todayAppointments').textContent = todayCount;
+            document.getElementById('prescriptionCount').textContent = prescriptionCount;
+        }
+
+        // Phase 3: Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        }
+
+        // Phase 3: Open prescription modal
+        window.openPrescriptionModal = (appointmentId, patientName) => {
+            currentAppointmentId = appointmentId;
+            document.getElementById('patientNameField').value = patientName;
+            document.getElementById('diagnosisField').value = '';
+            document.getElementById('medicinesField').value = '';
+            document.getElementById('notesField').value = '';
+            prescriptionModal.classList.add('active');
+        };
+
+        // Phase 3: Close modal
+        function closeModal() {
+            prescriptionModal.classList.remove('active');
+            currentAppointmentId = null;
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // Click outside modal to close
+        prescriptionModal.addEventListener('click', (e) => {
+            if (e.target === prescriptionModal) closeModal();
+        });
+
+        // Phase 3: Submit prescription
+        prescriptionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            try {
+                const submitBtn = prescriptionForm.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Saving...';
+
+                await addDoc(collection(db, 'prescriptions'), {
+                    appointmentId: currentAppointmentId,
+                    diagnosis: document.getElementById('diagnosisField').value,
+                    medicines: document.getElementById('medicinesField').value,
+                    notes: document.getElementById('notesField').value,
+                    doctorId: currentDoctor.uid,
+                    doctorName: currentDoctor.name,
+                    createdAt: new Date()
+                });
+
+                showNotification('Prescription saved successfully!', 'success');
+                closeModal();
+                await updateStats();
+
+            } catch (error) {
+                console.error('Error saving prescription:', error);
+                showNotification('Failed to save prescription', 'error');
+            } finally {
+                const submitBtn = prescriptionForm.querySelector('button[type="submit"]');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Save Prescription';
+            }
+        });
+
+        // Initialize on load
+        initializeDashboard();
+    </script>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

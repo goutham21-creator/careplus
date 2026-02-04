@@ -670,3 +670,34 @@ textarea.form-control {
         gap: 40px;
     }
 }
+/* Auth Pages */
+.auth-container {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+}
+
+.auth-form button {
+  width: 100%;
+  padding: 12px;
+  background: #0a84ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.auth-note {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+}
