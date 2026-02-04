@@ -82,18 +82,21 @@
             gap: 8px;
         }
 
-        .otp-input {
-            flex: 1;
+        #otpInput {
+            width: 100%;
             padding: 12px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             text-align: center;
-            font-size: 18px;
+            font-size: 24px;
             font-weight: 600;
+            letter-spacing: 8px;
+            font-family: 'Courier New', monospace;
             transition: var(--transition);
+            text-transform: uppercase;
         }
 
-        .otp-input:focus {
+        #otpInput:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
@@ -153,22 +156,27 @@
             margin: 24px 0;
             color: var(--text-light);
             font-size: 13px;
+            display: none;
         }
 
         .other-login-options {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            display: none;
         }
 
         .other-login-btn {
-            padding: 12px;
-            background: var(--background-color);
-            border: 1px solid var(--border-color);
+            padding: 10px;
+            background: transparent;
+            border: none;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
-            color: var(--text-main);
+            color: var(--primary-color);
             cursor: pointer;
             transition: var(--transition);
             text-decoration: none;
@@ -176,9 +184,8 @@
         }
 
         .other-login-btn:hover {
-            border-color: var(--primary-color);
-            background: var(--primary-color);
-            color: white;
+            background: rgba(0, 113, 227, 0.08);
+            text-decoration: underline;
         }
 
         .back-link {
@@ -357,14 +364,9 @@
                     <p style="font-size: 13px; color: var(--text-light); margin-bottom: 12px;">
                         We've sent a 6-digit code to your phone
                     </p>
-                    <div class="otp-input-group" id="otpInputGroup">
-                        <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
-                        <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
-                        <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
-                        <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
-                        <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
-                        <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
-                    </div>
+                    <input type="text" id="otpInput" class="form-input" 
+                           placeholder="Enter 6-digit code" pattern="[0-9]{6}" maxlength="6" 
+                           inputmode="numeric" required>
                     <div class="timer" id="timer"></div>
                 </div>
                 <button type="submit" class="submit-btn" id="verifyOtpBtn">Verify OTP</button>
@@ -375,9 +377,12 @@
             <!-- Divider -->
             <div class="divider" id="dividerOrText" style="display: none;">OR</div>
 
-            <!-- Other Login Options -->
+            <!-- Doctor / Admin Login (Secondary Option) -->
             <div class="other-login-options" id="otherOptions" style="display: none;">
-                <a href="auth.html" class="other-login-btn">Login as Doctor/Admin</a>
+                <p style="font-size: 12px; color: var(--text-light); text-align: center; margin-bottom: 8px;">
+                    Internal Users
+                </p>
+                <a href="auth.html" class="other-login-btn">Doctor / Admin Login</a>
             </div>
 
             <!-- Back Link -->
@@ -425,7 +430,7 @@
         const authMessage = document.getElementById('authMessage');
         const dividerOrText = document.getElementById('dividerOrText');
         const otherOptions = document.getElementById('otherOptions');
-        const otpInputGroup = document.getElementById('otpInputGroup');
+        const otpInput = document.getElementById('otpInput');
         const timerDiv = document.getElementById('timer');
 
         let otpSent = false;
@@ -433,20 +438,9 @@
         let timeLeft = 300;
         let timerInterval = null;
 
-        // Phase 3.1: Auto-move between OTP inputs
-        const otpInputs = otpInputGroup.querySelectorAll('.otp-input');
-        otpInputs.forEach((input, index) => {
-            input.addEventListener('input', (e) => {
-                if (e.target.value && index < otpInputs.length - 1) {
-                    otpInputs[index + 1].focus();
-                }
-            });
-
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                    otpInputs[index - 1].focus();
-                }
-            });
+        // Phase 3.1: OTP input validation - only numeric, max 6 digits
+        otpInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
         });
 
         // Phase 3.1: Send OTP (Mock)
@@ -499,7 +493,7 @@
         otpForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const enteredOtp = Array.from(otpInputs).map(input => input.value).join('');
+            const enteredOtp = otpInput.value.trim();
             const phone = sessionStorage.getItem('phoneForOtp');
 
             if (enteredOtp.length !== 6) {
@@ -667,7 +661,7 @@
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     timerDiv.textContent = 'OTP expired. Click "Back" and try again.';
-                    Array.from(otpInputs).forEach(input => input.disabled = true);
+                    otpInput.disabled = true;
                 }
             }, 1000);
         }
@@ -688,10 +682,8 @@
             authMessage.textContent = '';
             authMessage.className = 'message';
             phoneInput.value = '';
-            Array.from(otpInputs).forEach(input => {
-                input.value = '';
-                input.disabled = false;
-            });
+            otpInput.value = '';
+            otpInput.disabled = false;
             otpSent = false;
         };
     </script>
