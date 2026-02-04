@@ -224,6 +224,84 @@
             flex: 1;
         }
 
+        /* Name Collection Modal - Phase 3.1 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .modal-body {
+            margin-bottom: 24px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .modal-btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         @media (max-width: 480px) {
             .login-card {
                 padding: 30px 20px;
@@ -235,6 +313,10 @@
 
             .login-title {
                 font-size: 18px;
+            }
+
+            .modal-content {
+                padding: 30px 20px;
             }
         }
     </style>
@@ -301,6 +383,31 @@
             <!-- Back Link -->
             <div class="back-link">
                 <a href="index.html">← Back to Home</a>
+            </div>
+
+            <!-- Name Collection Modal - Phase 3.1 -->
+            <div class="modal-overlay" id="nameModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal-title">Welcome to CarePlus! 👋</div>
+                        <div class="modal-subtitle">Please complete your profile</div>
+                    </div>
+                    <form id="nameForm">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="form-label" style="text-align: left;">Full Name</label>
+                                <input type="text" id="patientName" class="form-input" 
+                                       placeholder="Enter your full name" required 
+                                       style="text-align: left;">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="modal-btn modal-btn-primary" id="saveNameBtn">
+                                Continue
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -423,10 +530,12 @@
                 const querySnapshot = await getDocs(q);
 
                 let patientDoc;
+                let isNewPatient = false;
 
                 if (querySnapshot.empty) {
                     // Auto-create new patient record on first login
                     console.log(`[AUTO-CREATE] Creating new patient record for phone: ${phone}`);
+                    isNewPatient = true;
                     
                     const newPatientData = {
                         phone: phone,
@@ -461,21 +570,20 @@
                     console.log(`[LOGIN] Patient login updated: ${querySnapshot.docs[0].id}`);
                 }
 
-                // Create session
-                sessionStorage.setItem('careplus_user', JSON.stringify({
-                    uid: patientDoc.id,
-                    phone: phone,
-                    role: 'patient',
-                    name: patientDoc.data.name || 'Patient',
-                    email: patientDoc.data.email || `patient-${phone}@careplus.local`
-                }));
+                // Store phone and patient doc in session for name collection
+                sessionStorage.setItem('patientDoc', JSON.stringify(patientDoc));
+                sessionStorage.setItem('isNewPatient', isNewPatient);
 
-                showMessage('✓ Login successful! Redirecting...', 'success');
-
-                // Redirect to appointment booking
-                setTimeout(() => {
-                    window.location.href = 'appointment.html';
-                }, 1500);
+                // If new patient, show name collection modal. Otherwise, complete login
+                if (isNewPatient) {
+                    otpForm.style.display = 'none';
+                    dividerOrText.style.display = 'none';
+                    otherOptions.style.display = 'none';
+                    showMessage('', 'info'); // Clear message
+                    document.getElementById('nameModal').classList.add('active');
+                } else {
+                    completeLogin(patientDoc, phone);
+                }
 
             } catch (error) {
                 console.error('Error verifying OTP:', error);
@@ -484,6 +592,68 @@
                 verifyOtpBtn.textContent = 'Verify OTP';
             }
         });
+
+        // Phase 3.1: Handle name collection form
+        document.getElementById('nameForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const patientName = document.getElementById('patientName').value.trim();
+            const saveNameBtn = document.getElementById('saveNameBtn');
+
+            if (!patientName) {
+                alert('Please enter your full name');
+                return;
+            }
+
+            try {
+                saveNameBtn.disabled = true;
+                saveNameBtn.textContent = 'Saving...';
+
+                // Update patient name in Firestore
+                const { updateDoc, doc } = 
+                    await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+
+                const patientDoc = JSON.parse(sessionStorage.getItem('patientDoc'));
+                const phone = sessionStorage.getItem('phoneForOtp');
+
+                const docRef = doc(db, 'users', patientDoc.id);
+                await updateDoc(docRef, { name: patientName });
+
+                console.log(`[PROFILE] Patient name updated: ${patientName}`);
+
+                // Update local patient doc with new name
+                patientDoc.data.name = patientName;
+
+                // Close modal and complete login
+                document.getElementById('nameModal').classList.remove('active');
+                completeLogin(patientDoc, phone);
+
+            } catch (error) {
+                console.error('Error saving name:', error);
+                alert('Failed to save your name. Please try again.');
+                saveNameBtn.disabled = false;
+                saveNameBtn.textContent = 'Continue';
+            }
+        });
+
+        // Phase 3.1: Complete login process and redirect to home
+        function completeLogin(patientDoc, phone) {
+            // Create session
+            sessionStorage.setItem('careplus_user', JSON.stringify({
+                uid: patientDoc.id,
+                phone: phone,
+                role: 'patient',
+                name: patientDoc.data.name || 'Patient',
+                email: patientDoc.data.email || `patient-${phone}@careplus.local`
+            }));
+
+            showMessage('✓ Login successful! Redirecting...', 'success');
+
+            // Redirect to home page (index.html)
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        }
 
         // Phase 3.1: Start OTP timer
         function startTimer() {

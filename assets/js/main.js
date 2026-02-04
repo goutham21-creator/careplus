@@ -9,14 +9,35 @@ document.addEventListener('DOMContentLoaded', () => {
     import('./auth.js').then(authModule => {
         const { getCurrentUser, isAuthenticated, logout } = authModule;
         
-        // Phase 3: Add logout functionality to header if user is logged in
+        // Phase 3.1: Update header based on user role
         const user = getCurrentUser();
         if (user) {
             const header = document.querySelector('header .nav-links');
             if (header) {
+                // Phase 3.1: For patients, show greeting with name
+                if (user.role === 'patient') {
+                    const greeting = document.createElement('span');
+                    greeting.style.fontSize = '14px';
+                    greeting.style.color = 'var(--primary-color)';
+                    greeting.style.fontWeight = '500';
+                    greeting.style.marginRight = '8px';
+                    greeting.textContent = `Hello, ${user.name || 'Patient'}`;
+                    header.insertBefore(greeting, header.lastChild);
+                } else {
+                    // For doctors/admins, show role label
+                    const roleLabel = document.createElement('span');
+                    roleLabel.style.fontSize = '12px';
+                    roleLabel.style.color = 'var(--primary-color)';
+                    roleLabel.style.fontWeight = '500';
+                    roleLabel.style.marginRight = '8px';
+                    roleLabel.textContent = `(${user.role})`;
+                    header.insertBefore(roleLabel, header.lastChild);
+                }
+
+                // Add logout button
                 const logoutBtn = document.createElement('a');
                 logoutBtn.href = '#';
-                logoutBtn.textContent = `Logout (${user.role})`;
+                logoutBtn.textContent = 'Logout';
                 logoutBtn.style.cursor = 'pointer';
                 logoutBtn.style.color = '#ff3b30';
                 logoutBtn.addEventListener('click', (e) => {
