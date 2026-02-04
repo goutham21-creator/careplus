@@ -370,6 +370,40 @@
         // Optional: Require patient role (comment out to allow all users)
         // requireRole('patient');
 
+        // Phase 3.1: Check and set appointment reminders
+        function checkAndSetReminders(appointments) {
+            appointments.forEach(appointment => {
+                const appointmentDate = new Date(appointment.preferredDate);
+                const now = new Date();
+                const timeDiff = appointmentDate - now;
+                
+                // Set reminder if appointment is within 24 hours (86400000 ms) and hasn't been reminded
+                if (timeDiff > 0 && timeDiff <= 86400000) {
+                    const reminderKey = `reminder_${appointment.id}`;
+                    if (!sessionStorage.getItem(reminderKey)) {
+                        // Show reminder after a short delay
+                        setTimeout(() => {
+                            if (Notification.permission === 'granted') {
+                                new Notification('Appointment Reminder 🏥', {
+                                    body: `Your appointment with ${appointment.doctor} is scheduled for tomorrow at ${appointment.preferredDate}`,
+                                    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="%230071e3"/><text x="50" y="60" font-size="50" fill="white" text-anchor="middle">🏥</text></svg>'
+                                });
+                            } else {
+                                // Fallback: Browser alert
+                                alert(`⏰ Reminder: Your appointment with ${appointment.doctor} is scheduled for ${formatDate(appointment.preferredDate)}`);
+                            }
+                            sessionStorage.setItem(reminderKey, 'true');
+                        }, 1000);
+                    }
+                }
+            });
+        }
+
+        // Request notification permission
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+
         // Phase 3: Load patient appointments
         async function loadAppointments() {
             try {
@@ -412,6 +446,9 @@
 
                 loadingState.style.display = 'none';
                 displayAppointments(allAppointments);
+                
+                // Phase 3.1: Check for upcoming appointments and set reminders
+                checkAndSetReminders(allAppointments);
 
             } catch (error) {
                 console.error('Error loading appointments:', error);

@@ -83,7 +83,7 @@
                         <div class="form-group">
                             <label class="form-label">Select Doctor</label>
                             <div style="position: relative;">
-                                <select class="form-control" required
+                                <select class="form-control" id="doctorSelect" required
                                     style="appearance: none; -webkit-appearance: none; background-color: white;">
                                     <option value="" disabled selected>Choose a doctor...</option>
                                     <option value="sharma">Dr. A. Sharma (Cardiology)</option>
@@ -100,6 +100,18 @@
                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <polyline points="6 9 12 15 18 9"></polyline>
                                     </svg>
+                                </div>
+                            </div>
+                            <!-- Phase 3.1: Doctor Info Card -->
+                            <div id="doctorInfoCard" style="display: none; margin-top: 12px; padding: 12px; background: #f5f5f7; border-radius: 8px; font-size: 13px;">
+                                <div style="margin-bottom: 8px;">
+                                    <strong style="display: block; margin-bottom: 4px; color: var(--secondary-color);">📋 Doctor Details</strong>
+                                    <div id="doctorDescription" style="color: var(--text-main);"></div>
+                                </div>
+                                <div style="padding-top: 8px; border-top: 1px solid var(--border-color);">
+                                    <span id="doctorAvailability" style="display: inline-block; padding: 4px 8px; border-radius: 4px; background: #d1f2d5; color: #237c37; font-weight: 600; font-size: 12px;">
+                                        ✓ Available
+                                    </span>
                                 </div>
                             </div>
                         </div>

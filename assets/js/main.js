@@ -98,6 +98,130 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Phase 3.1: Check appointment booking authentication requirement
+    const appointmentButtons = document.querySelectorAll('a[href="appointment.html"], a.btn[href*="appointment"]');
+    appointmentButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            import('./auth.js').then((authModule) => {
+                const { isAuthenticated } = authModule;
+                if (!isAuthenticated()) {
+                    e.preventDefault();
+                    alert('Please login first to book an appointment');
+                    window.location.href = 'auth.html';
+                }
+            });
+        });
+    });
+
+    // Phase 3.1: Doctor Information Database with Availability
+    const doctorDatabase = {
+        'sharma': {
+            name: 'Dr. A. Sharma',
+            specialization: 'Cardiology',
+            experience: '15 years',
+            focus: 'Heart & Cardiovascular Health',
+            available: true
+        },
+        'patel': {
+            name: 'Dr. Priya Patel',
+            specialization: 'Neurology',
+            experience: '12 years',
+            focus: 'Brain & Nervous System',
+            available: true
+        },
+        'singh': {
+            name: 'Dr. R. Singh',
+            specialization: 'Pediatrics',
+            experience: '10 years',
+            focus: 'Child Health & Development',
+            available: true
+        },
+        'gupta': {
+            name: 'Dr. S. Gupta',
+            specialization: 'Cardiology',
+            experience: '18 years',
+            focus: 'Advanced Cardiac Care',
+            available: false // On leave
+        },
+        'rao': {
+            name: 'Dr. K. Rao',
+            specialization: 'Neurology',
+            experience: '14 years',
+            focus: 'Neurological Disorders',
+            available: true
+        },
+        'nair': {
+            name: 'Dr. M. Nair',
+            specialization: 'Pediatrics',
+            experience: '8 years',
+            focus: 'Pediatric Care & Vaccination',
+            available: true
+        }
+    };
+
+    // Phase 3.1: Doctor Selection Handler - Display descriptions and availability
+    const doctorSelect = document.querySelector('#doctorSelect');
+    if (doctorSelect) {
+        doctorSelect.addEventListener('change', (e) => {
+            const selectedDoctorId = e.target.value;
+            const infoCard = document.querySelector('#doctorInfoCard');
+            const descDiv = document.querySelector('#doctorDescription');
+            const availabilityBadge = document.querySelector('#doctorAvailability');
+            const timeSlotSelect = document.querySelector('select[style*="appearance: none"]');
+
+            if (selectedDoctorId && doctorDatabase[selectedDoctorId]) {
+                const doctor = doctorDatabase[selectedDoctorId];
+                
+                // Display doctor information
+                descDiv.innerHTML = `
+                    <div><strong>${doctor.name}</strong></div>
+                    <div style="margin: 4px 0;">Specialization: ${doctor.specialization}</div>
+                    <div style="margin: 4px 0;">Experience: ${doctor.experience}</div>
+                    <div style="margin: 4px 0; color: #6f6f77;">Focus: ${doctor.focus}</div>
+                `;
+
+                // Display availability status
+                if (doctor.available) {
+                    availabilityBadge.innerHTML = '✓ Available Today';
+                    availabilityBadge.style.background = '#d1f2d5';
+                    availabilityBadge.style.color = '#237c37';
+                    // Enable time slot selection
+                    if (timeSlotSelect) {
+                        timeSlotSelect.disabled = false;
+                        timeSlotSelect.style.opacity = '1';
+                        timeSlotSelect.style.cursor = 'pointer';
+                    }
+                } else {
+                    availabilityBadge.innerHTML = '⊘ On Leave';
+                    availabilityBadge.style.background = '#ffe5e5';
+                    availabilityBadge.style.color = '#c5192d';
+                    // Disable time slot selection
+                    if (timeSlotSelect) {
+                        timeSlotSelect.disabled = true;
+                        timeSlotSelect.style.opacity = '0.5';
+                        timeSlotSelect.style.cursor = 'not-allowed';
+                        alert(`${doctor.name} is currently on leave. Please select a different doctor.`);
+                    }
+                }
+
+                infoCard.style.display = 'block';
+            } else if (selectedDoctorId === 'other') {
+                descDiv.innerHTML = '<div>Any available specialist will be assigned based on your needs.</div>';
+                availabilityBadge.innerHTML = '✓ Available';
+                availabilityBadge.style.background = '#d1f2d5';
+                availabilityBadge.style.color = '#237c37';
+                infoCard.style.display = 'block';
+                if (timeSlotSelect) {
+                    timeSlotSelect.disabled = false;
+                    timeSlotSelect.style.opacity = '1';
+                    timeSlotSelect.style.cursor = 'pointer';
+                }
+            } else {
+                infoCard.style.display = 'none';
+            }
+        });
+    }
+
     // Form Handling
     const appointmentForm = document.querySelector('form');
     // Check if we are on the appointment page (basic check)
@@ -107,6 +231,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // Phase 3: Import auth utilities
         import('./auth.js').then(async (authModule) => {
             const { getCurrentUser, isAuthenticated, showNotification } = authModule;
+            
+            // Phase 3.1: Verify user is authenticated before allowing form interaction
+            if (!isAuthenticated()) {
+                showNotification('Please login to book an appointment', 'error');
+                setTimeout(() => {
+                    window.location.href = 'auth.html';
+                }, 1500);
+                return;
+            }
 
             // Check authentication (optional - allow guests to book)
             const user = getCurrentUser();
